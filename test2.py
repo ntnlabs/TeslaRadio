@@ -1,7 +1,7 @@
 # Import the module and threading
 from pyky040 import pyky040
 import threading
-import time
+from time import sleep, time
 
 # define variables
 Volume = 0
@@ -10,6 +10,8 @@ Menu_pos = 0
 Menu_pos_prev = 0
 Menu = ['Volume', 'Next', 'Stop', 'MP3', 'Settings']
 Timeout = 0
+Long_press = 1000
+Sw_down_time = 0
 
 # Define your callback
 def my_callback_rotate(scale_position):
@@ -20,20 +22,20 @@ def my_callback_rotate(scale_position):
 def my_callback_press(state):
 #    print('Hello world! The button has been pressed {}'.format(state))
     global Menu_pos
-    print('{}'.format(state))
-    if ( state == "DOWNLONG" ):
-        Menu_pos = 4
-        print('.')
-    elif ( state == 'UP' ):
-        if ( Menu_pos < 3 ):
+    global Long_press
+    global Sw_down_time
+    if ( state == "DOWN" ):
+        Sw_down_time = time() * 1000
+    elif ( state == "UP" ):
+        if ( ( (time() * 1000) - Sw_down_time ) > Long_press ):
+            Menu_pos = 4
+        elif ( Menu_pos < 3 ):
             Menu_pos = Menu_pos + 1
-            print('..')
         else:
             Menu_pos = 1
-            print('...')
 
 my_encoder = pyky040.Encoder(CLK=5, DT=6, SW=13)
-my_encoder.setup(scale_min=0, scale_max=100, step=1, chg_callback=my_callback_rotate, sw_callback=my_callback_press, sw_debounce_time=600, sw_long_press=500)
+my_encoder.setup(scale_min=0, scale_max=100, step=1, chg_callback=my_callback_rotate, sw_callback=my_callback_press, sw_debounce_time=600)
 my_thread = threading.Thread(target=my_encoder.watch)
 my_thread.start()
 
@@ -61,7 +63,7 @@ while True:
         Timeout = 0
 
 # cakame chvilku
-    time.sleep(0.1)
+    sleep(0.1)
 
 # back to default
     if ( Timeout < 60 ):
