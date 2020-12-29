@@ -1,35 +1,35 @@
 # Import the module and threading
 from pyky040 import pyky040
 import threading
-from time import sleep, time
+from time import sleep
 
 # define variables
 Volume = 0
 Volume_prev = 11
 Menu_pos = 0
 Menu_pos_prev = 0
-Menu = ['Volume', 'Next', 'Stop', 'MP3', 'Settings']
+SubMenu_pos =0
+SubMenu_pos_prev = 0
+Menu = ['Volume', 'Control', 'Input', 'Display', 'Settings']
+SubMenu = ['Play', 'Next', 'Stop' ], ['Stream', 'File', 'Bluetooth', 'Cast' ], ['Color', 'Timeout' ], ['IP', 'Services', 'Reboot', 'Update']
+
 Timeout = 0
-Long_press = 1000
-Sw_down_time = 0
 
 # Define your callback
 def my_callback_rotate(scale_position):
 #    print('Hello world! The scale position is {}'.format(scale_position))
     global Volume
+    global Timeout
+    global SubMenu_pos
+    global SubMenu_pos_prev
+    Timeout = 0
     Volume = str(scale_position)
 
 def my_callback_press(state):
 #    print('Hello world! The button has been pressed {}'.format(state))
     global Menu_pos
-    global Long_press
-    global Sw_down_time
-    if ( state == "DOWN" ):
-        Sw_down_time = time() * 1000
-    elif ( state == "UP" ):
-        if ( ( (time() * 1000) - Sw_down_time ) > Long_press ):
-            Menu_pos = 4
-        elif ( Menu_pos < 3 ):
+    if ( state == "UP" ):
+        if ( Menu_pos < (len(Menu)-1) ):
             Menu_pos = Menu_pos + 1
         else:
             Menu_pos = 1
