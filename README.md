@@ -19,5 +19,5 @@ Tesla ARS 236 in video: https://www.youtube.com/watch?v=bsh7unEFyhs
 * display
 
 # Warnings
-I'm using my fork of pyky040 library. These are my changes:
+I'm using [my fork](https://github.com/ntnlabs/pyKY040/blob/master/pyky040/pyky040.py) of pyky040 library. These are my changes:
 * long/short push detection
