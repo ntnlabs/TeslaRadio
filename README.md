@@ -13,6 +13,7 @@ Tesla ARS 236 in video: https://www.youtube.com/watch?v=bsh7unEFyhs
 * program some knob interface (push_and_turn)
 
 ## The HW
+* 2x Tesla ARS 236
 * Rpi Zero W
 * HiFiBerry MiniAMP
 * KY040 Rotary Encoder
