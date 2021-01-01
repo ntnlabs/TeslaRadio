@@ -12,6 +12,12 @@ Tesla ARS 236 in video: https://www.youtube.com/watch?v=bsh7unEFyhs
 * put two speakers inside together with RPiZW, HiFiBerry MiniAMP and KY040
 * program some knob interface (push_and_turn)
 
+## The HW
+* Rpi Zero W
+* HiFiBerry MiniAMP
+* KY040 Rotary Encoder
+* Waveshare 1.5 128x128 OLED display
+
 ## Features (please note, some of those may be still in progress)
 * online radio play
 * mp3 (local storage) play
