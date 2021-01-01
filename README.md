@@ -24,6 +24,7 @@ Tesla ARS 236 in video: https://www.youtube.com/watch?v=bsh7unEFyhs
 * pyky040 module
 * luma.oled drivers
 * mpd & mpc for media player
+* some ttf fonts
 
 ## Features (please note, some of those may be still in progress)
 * online radio play
