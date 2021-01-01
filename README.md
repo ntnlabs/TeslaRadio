@@ -19,6 +19,12 @@ Tesla ARS 236 in video: https://www.youtube.com/watch?v=bsh7unEFyhs
 * KY040 Rotary Encoder
 * Waveshare 1.5 128x128 OLED display
 
+## The SW
+* python3.7
+* pyky040 module
+* luma.oled drivers
+* mpd & mpc for media player
+
 ## Features (please note, some of those may be still in progress)
 * online radio play
 * mp3 (local storage) play
