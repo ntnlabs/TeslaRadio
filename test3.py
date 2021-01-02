@@ -152,6 +152,7 @@ def move_and_draw_stars(stars, max_depth):
 
             if 0 <= x < device.width and 0 <= y < device.height:
                 size = (1 - float(star[2]) / max_depth) * 4
+                shade = "white"
                 if (device.mode == "RGB"):
                     color = int(100 + (1 - float(star[2]) / max_depth) * 155)
                     if (color < 150):
@@ -164,7 +165,7 @@ def move_and_draw_stars(stars, max_depth):
                         shade = "white"
                 else:
                     shade = "white"
-                draw.rectangle((x, y, x + size, y + size), fill=shade)
+                draw.rectangle((x, y, x + size, y + size), fill = shade)
 
 
 def Update_Screen(device):
