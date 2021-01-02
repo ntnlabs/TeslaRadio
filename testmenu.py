@@ -83,6 +83,7 @@ def rotate_press(state):
     if ( state == "UP" ):
         if (Menu_uroven < 2):
             Menu_uroven = Menu_uroven + 1
+            Menu_polozka = 0
         else:
             Menu_uroven = 1
             Menu_polozka = 0
