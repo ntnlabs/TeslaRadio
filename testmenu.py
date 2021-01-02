@@ -52,19 +52,11 @@ Display_args.v_offset = 0
 Display_args.width = 128
 
 # define variables
-Volume = 0
-Volume_step = 0.5
-Volume_max = 100
 Changed = 1
-Command = 0
-Menu = 0
-Submenu = 0
-Where = 0
 Menu_menu = [['Volume', 'Play', 'Setup', 'Config', 'Exit'],['Play/pause', 'Stop', 'Next', 'Previous'],['Enable SSH', 'Enable BT', 'Enable Wifi' ],['Shutdown', 'Reboot']]
-Song_description = "Radio Expres: DURAN DURAN - RIO" # demo/test desc
-Timeout = 0
-Timeout_max = 30
 Screensaver = 0
+Timeout = 0
+Where = 0
 
 # Define your callback
 def rotate_up(scale_position):
@@ -84,23 +76,15 @@ def rotate_press(state):
     Timeout = 0
 
 def Update_Screen(device):
-    global Changed, Menu, Menu_menu, Where, Screensaver
+    global Changed, Menu_menu, Screensaver
 
-    if ((Menu == 0) & (Where == 0)):
+    if (Where == 0):
         with canvas(device) as draw:
-            if (Screensaver > 0):
-                draw.text((0,0), "Volume", font = font2_m, fill = "blue")
-                draw.text((80-(41*(len(str(int(Volume)))-1)),30), str(int(Volume)), font = font2_xl, fill = "blue")
-            else:
-                draw.text((0,0), "Volume", font = font2_m, fill = "white")
-                draw.text((80-(41*(len(str(int(Volume)))-1)),30), str(int(Volume)), font = font2_xl, fill = "red")
-    elif (Where == 0):
+            draw.text((10,40), Menu_menu[0][0], font = font2_ll, fill = "white")
+    else:
         with canvas(device) as draw:
-            draw.text((10,40), Menu_menu[0][int(Menu)], font = font2_ll, fill = "white")
-    elif (Where != 0):
-        with canvas(device) as draw:
-            draw.text((10,20), Menu_menu[0][int(Menu)], font = font2_l, fill = "white")
-            draw.text((1,40), Menu_menu[int(Menu)][int(Submenu)], font = font2_ll, fill = "white")
+            draw.text((10,20), Menu_menu[0][0], font = font2_l, fill = "white")
+            draw.text((1,40), Menu_menu[1][1], font = font2_ll, fill = "white")
     Changed = 0
 
 # threading the encoder
@@ -129,8 +113,6 @@ if __name__ == "__main__":
                     Timeout = Timeout + 1
                 else:
                     Timeout = 0
-                    Menu = 0
-                    Submenu = 0
                     Where = 0
                     Changed = 1
                     Screensaver = 1
@@ -139,8 +121,6 @@ if __name__ == "__main__":
                     Timeout = Timeout + 1
                 else:
                     Timeout = 0
-                    Menu = 0
-                    Submenu = 0
                     Where = 0
                     Changed = 1
 
