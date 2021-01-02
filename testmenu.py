@@ -68,105 +68,20 @@ Screensaver = 0
 
 # Define your callback
 def rotate_up(scale_position):
-#    print('Hello world! The scale position is {}'.format(scale_position))
-    global Volume, Changed, Menu, Submenu, Where, Timeout, Screensaver
-    if (Screensaver > 0):
-        Screensaver = 0
-        Changed = 1
-        Timeout = 0
-        return
-    if (Menu == 0):
-        if (Volume < Volume_max):
-            Volume = Volume + Volume_step
-    elif (Where == 0):
-        if (Menu < (len(Menu_menu[0])-1)):
-            Menu = Menu + 0.5
-            Where = 0
-    elif (Submenu < (len(Menu_menu[int(Menu)])-1)):
-        Submenu = Submenu + 0.5
+    global Changed, Timeout
     Changed = 1
     Timeout = 0
 
 def rotate_down(scale_position):
-#    print('Hello world! The scale position is {}'.format(scale_position))
-    global Volume, Changed, Menu, Submenu, Where, Timeout, Screensaver
-    if (Screensaver > 0):
-        Screensaver = 0
-        Changed = 1
-        Timeout = 0
-        return
-    if (Menu == 0):
-        if (Volume > 0):
-            Volume = Volume - Volume_step
-    elif (Where == 0):
-        if (Menu > 1):
-            Menu = Menu - 0.5
-            Where = 0
-    elif (Submenu > 0):
-        Submenu = Submenu - 0.5
+    global Changed, Timeout
     Changed = 1
     Timeout = 0
 
 def rotate_press(state):
 #    print('Hello world! The button has been pressed {}'.format(state))
-    global Menu, Submenu, Changed, Where, Timeout
-    if ( state == "UP" ):
-        if (Menu == 0):
-            Menu = 1
-            Where = 0
-            Submenu = 0
-        else:
-            if (Where == 0):
-                Submenu = 0
-                Where = Menu
-            else:
-                Where = 0
-                Submenu = 0
+    global Changed, Timeout
     Changed = 1
     Timeout = 0
-
-def init_stars(num_stars, max_depth):
-    stars = []
-    for i in range(num_stars):
-        star = [randrange(-25, 25), randrange(-25, 25), randrange(1, max_depth)]
-        stars.append(star)
-    return stars
-
-
-def move_and_draw_stars(stars, max_depth):
-    origin_x = device.width // 2
-    origin_y = device.height // 2
-
-    with canvas(device) as draw:
-        for star in stars:
-            star[2] -= 0.19
-
-            if star[2] <= 0:
-                star[0] = randrange(-25, 25)
-                star[1] = randrange(-25, 25)
-                star[2] = max_depth
-
-            k = 128.0 / star[2]
-            x = int(star[0] * k + origin_x)
-            y = int(star[1] * k + origin_y)
-
-            if 0 <= x < device.width and 0 <= y < device.height:
-                size = (1 - float(star[2]) / max_depth) * 4
-                shade = "white"
-                if (device.mode == "RGB"):
-                    color = int(100 + (1 - float(star[2]) / max_depth) * 155)
-                    if (color < 150):
-                        shade = "blue"
-                    elif (color < 180):
-                        shade = "indigo"
-                    elif (color < 210):
-                        shade = "red"
-                    elif (color < 240):
-                        shade = "white"
-                else:
-                    shade = "white"
-                draw.rectangle((x, y, x + size, y + size), fill = shade)
-
 
 def Update_Screen(device):
     global Changed, Menu, Menu_menu, Where, Screensaver
@@ -219,7 +134,7 @@ if __name__ == "__main__":
                     Where = 0
                     Changed = 1
                     Screensaver = 1
-            elif (Screensaver == 1):
+            else:
                 if ( Timeout < (Timeout_max * 2) ):
                     Timeout = Timeout + 1
                 else:
@@ -228,12 +143,6 @@ if __name__ == "__main__":
                     Submenu = 0
                     Where = 0
                     Changed = 1
-                    Screensaver = 2
-                    max_depth = 32
-                    stars = init_stars(512, max_depth)
-            elif (Screensaver == 2):
-                move_and_draw_stars(stars, max_depth)
-
 
 #            time.sleep(0.5)
 # (x,y) x=doprava, y=dole
