@@ -53,7 +53,9 @@ Display_args.width = 128
 
 # define variables
 Changed = 1
-Menu_menu = [['Volume', 'Play', 'Setup', 'Config', 'Exit'],['Play/pause', 'Stop', 'Next', 'Previous'],['Enable SSH', 'Enable BT', 'Enable Wifi' ],['Shutdown', 'Reboot']]
+Menu_menu = [['Play', 'Setup', 'Config', 'Exit'],['Play/pause', 'Stop', 'Next', 'Previous'],['Enable SSH', 'Enable BT', 'Enable Wifi' ],['Shutdown', 'Reboot']]
+Menu_uroven = 0
+Menu_polozka = 0
 Screensaver = 0
 Timeout = 0
 Timeout_max = 30
@@ -61,31 +63,43 @@ Where = 0
 
 # Define your callback
 def rotate_up(scale_position):
-    global Changed, Timeout
+    global Changed, Timeout, Menu_uroven, Menu_polozka
+    if (Menu_uroven != 0):
+        if (Menu_polozka < len(Menu_menu[Menu_uroven-1])-1):
+            Menu_polozka = Menu_polozka + 1
     Changed = 1
     Timeout = 0
 
 def rotate_down(scale_position):
-    global Changed, Timeout
+    global Changed, Timeout, Menu_uroven, Menu_polozka
+    if (Menu_uroven != 0):
+        if (Menu_polozka > 0):
+            Menu_polozka = Menu_polozka - 1
     Changed = 1
     Timeout = 0
 
 def rotate_press(state):
-#    print('Hello world! The button has been pressed {}'.format(state))
-    global Changed, Timeout
+    global Changed, Timeout, Menu_uroven, Menu_polozka
+    if ( state == "UP" ):
+        if (Menu_uroven < 2):
+            Menu_uroven = Menu_uroven + 1
+        else:
+            Menu_uroven = 1
+            Menu_polozka = 0
     Changed = 1
     Timeout = 0
 
 def Update_Screen(device):
-    global Changed, Menu_menu, Screensaver
+    global Changed, Menu_menu, Screensaver, Menu_uroven
 
-    if (Where == 0):
-        with canvas(device) as draw:
-            draw.text((10,40), Menu_menu[0][0], font = font2_ll, fill = "white")
-    else:
-        with canvas(device) as draw:
-            draw.text((10,20), Menu_menu[0][0], font = font2_l, fill = "white")
-            draw.text((1,40), Menu_menu[1][1], font = font2_ll, fill = "white")
+    with canvas(device) as draw:
+        draw.text((1,118), "Uroven: "+str(Menu_uroven)+" Polozka: "+str(Menu_polozka), font = font2_m, fill = "indigo")
+        if (Menu_uroven == 1):
+            draw.text((10,40), Menu_menu[Menu_uroven-1][Menu_polozka], font = font2_ll, fill = "white")
+        elif (Menu_uroven == 2):
+            draw.text((10,20), Menu_menu[Menu_uroven-2][0], font = font2_l, fill = "white")
+            draw.text((1,40), Menu_menu[Menu_uroven-1][Menu_polozka], font = font2_ll, fill = "white")
+
     Changed = 0
 
 # threading the encoder
@@ -99,10 +113,11 @@ if __name__ == "__main__":
         device = cmdline.create_device(Display_args)
         font_path1 = str(Path(__file__).resolve().parent.joinpath('fonts', 'C&C Red Alert [INET].ttf'))
         font_path2 = str(Path(__file__).resolve().parent.joinpath('fonts', 'DSEG7Modern-Regular.ttf'))
-        font2_m = ImageFont.truetype(font_path1, 18)
-        font2_l = ImageFont.truetype(font_path1, 22)
-        font2_ll = ImageFont.truetype(font_path1, 36)
-        font2_xl = ImageFont.truetype(font_path2, 50)
+        font_path3 = str(Path(__file__).resolve().parent.joinpath('fonts', 'Volter__28Goldfish_29.ttf'))
+        font2_m = ImageFont.truetype(font_path3, 9)
+        font2_l = ImageFont.truetype(font_path1, 18)
+        font2_ll = ImageFont.truetype(font_path1, 28)
+        font2_xl = ImageFont.truetype(font_path1, 50)
         Zmena = 1
 
         while True:
@@ -115,6 +130,7 @@ if __name__ == "__main__":
                 else:
                     Timeout = 0
                     Where = 0
+                    Menu_uroven = 0
                     Changed = 1
                     Screensaver = 1
             else:
