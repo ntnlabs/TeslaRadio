@@ -56,6 +56,7 @@ Changed = 1
 Menu_menu = [['Volume', 'Play', 'Setup', 'Config', 'Exit'],['Play/pause', 'Stop', 'Next', 'Previous'],['Enable SSH', 'Enable BT', 'Enable Wifi' ],['Shutdown', 'Reboot']]
 Screensaver = 0
 Timeout = 0
+Timeout_max = 30
 Where = 0
 
 # Define your callback
