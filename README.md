@@ -52,6 +52,11 @@ Tesla ARS 236 in video: https://www.youtube.com/watch?v=bsh7unEFyhs
 * bluetooth play
 * display
 
+# Credits
+* pyky040 sourced from  https://github.com/raphaelyancey/pyKY040
+* screensaver sourced from https://github.com/rm-hull/luma.examples (originally from http://codentronix.com/2011/05/28/3d-starfield-made-using-python-and-pygame/)
+* luma.oled, luma.core, luma.examples from  https://github.com/rm-hull/luma.core
+
 # Warnings
 I'm using [my fork](https://github.com/ntnlabs/pyKY040/blob/master/pyky040/pyky040.py) of pyky040 library. These are my changes:
 * long/short push detection
