@@ -80,11 +80,11 @@ def rotate_up(scale_position):
         if (Volume < Volume_max):
             Volume = Volume + Volume_step
     elif (Menu_uroven == 1):
-        if (Menu_menu_pointer < len(Menu_menu[Menu_menu_pointer])-1):
-            Menu_menu_pointer = Menu_menu_pointer + 1
+        if (Menu_menu_pointer < len(Menu_menu[int(Menu_menu_pointer)])-1):
+            Menu_menu_pointer = Menu_menu_pointer + 0.5
     elif (Menu_uroven == 2):
-        if (Menu_submenu_pointer < len(Menu_submenu[Menu_parent])-1):
-            Menu_submenu_pointer = Menu_submenu_pointer + 1
+        if (Menu_submenu_pointer < len(Menu_submenu[int(Menu_parent)])-1):
+            Menu_submenu_pointer = Menu_submenu_pointer + 0.5
     Changed = 1
     Timeout = 0
 
@@ -100,10 +100,10 @@ def rotate_down(scale_position):
             Volume = Volume - Volume_step
     if (Menu_uroven == 1):
         if (Menu_menu_pointer > 0):
-            Menu_menu_pointer = Menu_menu_pointer - 1
+            Menu_menu_pointer = Menu_menu_pointer - 0.5
     elif (Menu_uroven == 2):
         if (Menu_submenu_pointer > 0):
-            Menu_submenu_pointer = Menu_submenu_pointer - 1
+            Menu_submenu_pointer = Menu_submenu_pointer - 0.5
     Changed = 1
     Timeout = 0
 
@@ -194,10 +194,10 @@ def Update_Screen(device):
                 draw.text((0,0), "Volume", font = font2_m, fill = "white")
                 draw.text((80-(41*(len(str(int(Volume)))-1)),30), str(int(Volume)), font = font2_xl, fill = "red")
         elif (Menu_uroven == 1):
-            draw.text((10,40), Menu_menu[Menu_menu_pointer], font = font2_ll, fill = "white")
+            draw.text((10,40), Menu_menu[int(Menu_menu_pointer)], font = font2_ll, fill = "white")
         elif (Menu_uroven == 2):
-            draw.text((10,20), Menu_menu[Menu_parent], font = font2_l, fill = "white")
-            draw.text((1,40), Menu_submenu[Menu_parent][Menu_submenu_pointer], font = font2_ll, fill = "white")
+            draw.text((10,20), Menu_menu[int(Menu_parent)], font = font2_l, fill = "white")
+            draw.text((1,40), Menu_submenu[int(Menu_parent)][int(Menu_submenu_pointer)], font = font2_ll, fill = "white")
     Changed = 0
 
 # threading the encoder
