@@ -53,53 +53,63 @@ Display_args.width = 128
 
 # define variables
 Changed = 1
-Menu_menu = [['Play', 'Setup', 'Config', 'Exit'],['Play/pause', 'Stop', 'Next', 'Previous'],['Enable SSH', 'Enable BT', 'Enable Wifi' ],['Shutdown', 'Reboot']]
+Menu_menu = ['Play', 'Setup', 'Config', 'Exit']
+Menu_submenu = [['Play/pause', 'Stop', 'Next', 'Previous'],['Screensaver', 'Input', 'Timeout', 'Language', 'Update'],['Enable SSH', 'Enable BT', 'Enable Wifi' ],['Shutdown', 'Reboot']]
 Menu_uroven = 0
-Menu_polozka = 0
+Menu_menu_pointer = 0
+Menu_submenu_pointer = 0
+Menu_parent = 0
 Screensaver = 0
 Timeout = 0
 Timeout_max = 30
-Where = 0
 
 # Define your callback
 def rotate_up(scale_position):
-    global Changed, Timeout, Menu_uroven, Menu_polozka
-    if (Menu_uroven != 0):
-        if (Menu_polozka < len(Menu_menu[Menu_uroven-1])-1):
-            Menu_polozka = Menu_polozka + 1
+    global Changed, Timeout, Menu_uroven, Menu_menu_pointer, Menu_submenu_pointer, Menu_parent
+    if (Menu_uroven == 1):
+        if (Menu_menu_pointer < len(Menu_menu[Menu_menu_pointer])-1):
+            Menu_menu_pointer = Menu_menu_pointer + 1
+    elif (Menu_uroven == 2):
+        if (Menu_submenu_pointer < len(Menu_submenu[Menu_parent])-1):
+            Menu_submenu_pointer = Menu_submenu_pointer + 1
     Changed = 1
     Timeout = 0
 
 def rotate_down(scale_position):
-    global Changed, Timeout, Menu_uroven, Menu_polozka
-    if (Menu_uroven != 0):
-        if (Menu_polozka > 0):
-            Menu_polozka = Menu_polozka - 1
+    global Changed, Timeout, Menu_uroven, Menu_menu_pointer, Menu_submenu_pointer, Menu_parent
+    if (Menu_uroven == 1):
+        if (Menu_menu_pointer > 0):
+            Menu_menu_pointer = Menu_menu_pointer - 1
+    elif (Menu_uroven == 2):
+        if (Menu_submenu_pointer > 0):
+            Menu_submenu_pointer = Menu_submenu_pointer - 1
     Changed = 1
     Timeout = 0
 
 def rotate_press(state):
-    global Changed, Timeout, Menu_uroven, Menu_polozka
+    global Changed, Timeout, Menu_uroven, Menu_menu_pointer, Menu_submenu_pointer, Menu_parent
     if ( state == "UP" ):
         if (Menu_uroven < 2):
             Menu_uroven = Menu_uroven + 1
-            Menu_polozka = 0
+            Menu_submenu_pointer = 0
+            Menu_parent = Menu_menu_pointer
         else:
             Menu_uroven = 1
-            Menu_polozka = 0
+            Menu_menu_pointer = Menu_parent
     Changed = 1
     Timeout = 0
 
 def Update_Screen(device):
-    global Changed, Menu_menu, Screensaver, Menu_uroven
+    global Changed, Menu_uroven, Menu_menu_pointer, Menu_submenu_pointer, Menu_parent
 
     with canvas(device) as draw:
-        draw.text((1,118), "Uroven: "+str(Menu_uroven)+" Polozka: "+str(Menu_polozka), font = font2_m, fill = "indigo")
+        draw.text((1,108), "Parent: "+str(Menu_parent)+" Uroven: "+str(Menu_uroven), font = font2_m, fill = "indigo")
+        draw.text((1,118), "Menu: "+str(Menu_menu_pointer)+" Sub: "+str(Menu_submenu_pointer), font = font2_m, fill = "indigo")
         if (Menu_uroven == 1):
-            draw.text((10,40), Menu_menu[Menu_uroven-1][Menu_polozka], font = font2_ll, fill = "white")
+            draw.text((10,40), Menu_menu[Menu_menu_pointer], font = font2_ll, fill = "white")
         elif (Menu_uroven == 2):
-            draw.text((10,20), Menu_menu[Menu_uroven-2][0], font = font2_l, fill = "white")
-            draw.text((1,40), Menu_menu[Menu_uroven-1][Menu_polozka], font = font2_ll, fill = "white")
+            draw.text((10,20), Menu_menu[Menu_parent], font = font2_l, fill = "white")
+            draw.text((1,40), Menu_submenu[Menu_parent][Menu_submenu_pointer], font = font2_ll, fill = "white")
 
     Changed = 0
 
@@ -120,6 +130,7 @@ if __name__ == "__main__":
         font2_ll = ImageFont.truetype(font_path1, 28)
         font2_xl = ImageFont.truetype(font_path1, 50)
         Zmena = 1
+        Screensaver = 0
 
         while True:
             if (Changed == 1):
@@ -129,9 +140,11 @@ if __name__ == "__main__":
                 if ( Timeout < Timeout_max ):
                     Timeout = Timeout + 1
                 else:
-                    Timeout = 0
-                    Where = 0
                     Menu_uroven = 0
+                    Menu_menu_pointer = 0
+                    Menu_submenu_pointer = 0
+                    Menu_parent = 0
+                    Timeout = 0
                     Changed = 1
                     Screensaver = 1
             else:
@@ -139,7 +152,6 @@ if __name__ == "__main__":
                     Timeout = Timeout + 1
                 else:
                     Timeout = 0
-                    Where = 0
                     Changed = 1
 
 #            time.sleep(0.5)
