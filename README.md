@@ -39,7 +39,7 @@ Tesla ARS 236 in video: https://www.youtube.com/watch?v=bsh7unEFyhs
 (shown on test device RPi4 in a Nes4Pi case)
 ![alt text](https://github.com/ntnlabs/TeslaRadio/blob/main/PXL_20210103_020910203.NIGHT.jpg)
 
-### Performance
+# Performance
 On my test device RPi4 2GB with active cooling (not overclocked, but maybe important) screensaver pulls around 30%. The menu alone pulls 6 to 9 %. This is low enought, because on a RPiZW (different test device) the mpd daemon pulls around 12% when pulling a 128bit stream over wifi and playing it to stereo output thru HiFiBerry Miniamp.
 
 ## The SW
