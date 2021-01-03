@@ -35,6 +35,10 @@ Tesla ARS 236 in video: https://www.youtube.com/watch?v=bsh7unEFyhs
 * VCC - 3v3 (any)
 * GND - Ground (any)
 
+## Final wiring
+(shown on test RPi4 in a Nes4Pi case)
+![alt text](https://github.com/ntnlabs/TeslaRadio/blob/main/PXL_20210103_020910203.NIGHT.jpg)
+
 ## The SW
 * python3.7
 * pyky040 module
