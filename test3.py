@@ -9,6 +9,7 @@ from random import randrange
 from pyky040 import pyky040 # this module was forked/changed
 import threading
 import argparse
+import os
 
 # define display
 Display_args = argparse.Namespace()
@@ -119,6 +120,13 @@ def rotate_press(state):
             Menu_submenu_pointer = 0
             Menu_parent = Menu_menu_pointer
         else:
+            if ((Menu_menu_pointer == 3) and (Menu_submenu_pointer == 0)):
+                os.system("reboot")
+                Menu_menu_pointer = 0
+                Menu_submenu_pointer = 0
+                Menu_parent = 0
+                Menu_uroven = 0
+                return
             Menu_uroven = 1
             Menu_menu_pointer = Menu_parent
     Changed = 1
