@@ -80,6 +80,7 @@ Scroll_direction_Song = 1
 Song_name_scrolling = ""
 Scroll_display_len_Song = 10
 
+# Break song data into Station/Artist/Song (other stations may broadcast different way - TODO: check/split byt station)
 def New_song(Description):
     global Station_name, Song_name, Artist_name
     Station_name, Song_name = Description.split(":")
@@ -88,7 +89,7 @@ def New_song(Description):
     Artist_name = Artist_name.strip()
     Song_name = Song_name.strip()
 
-# Define your callback
+# rotate button up
 def rotate_up(scale_position):
     global Volume, Changed, Timeout, Screensaver, Menu_uroven, Menu_menu_pointer, Menu_submenu_pointer, Menu_parent
     if (Screensaver > 0):
@@ -108,6 +109,7 @@ def rotate_up(scale_position):
     Changed = 1
     Timeout = 0
 
+# rotate button down
 def rotate_down(scale_position):
     global Volume, Changed, Timeout, Screensaver, Menu_uroven, Menu_menu_pointer, Menu_submenu_pointer, Menu_parent
     if (Screensaver > 0):
@@ -127,6 +129,7 @@ def rotate_down(scale_position):
     Changed = 1
     Timeout = 0
 
+# rotate button pressed (my KY040 module!!!)
 def rotate_press(state):
     global Volume, Changed, Timeout, Screensaver, Menu_uroven, Menu_menu_pointer, Menu_submenu_pointer, Menu_parent
     if ( state == "UP" ):
@@ -141,6 +144,7 @@ def rotate_press(state):
             Menu_parent = Menu_menu_pointer
         else:
             if ((Menu_menu_pointer == 3) and (Menu_submenu_pointer == 0)):
+# run as sudo
                 os.system("poweroff")
                 Menu_menu_pointer = 0
                 Menu_submenu_pointer = 0
@@ -148,6 +152,7 @@ def rotate_press(state):
                 Menu_uroven = 0
                 return
             if ((Menu_menu_pointer == 3) and (Menu_submenu_pointer == 1)):
+# run as sudo
                 os.system("reboot")
                 Menu_menu_pointer = 0
                 Menu_submenu_pointer = 0
@@ -159,6 +164,7 @@ def rotate_press(state):
     Changed = 1
     Timeout = 0
 
+# needed for screensaver
 def init_stars(num_stars, max_depth):
     stars = []
     for i in range(num_stars):
@@ -166,7 +172,7 @@ def init_stars(num_stars, max_depth):
         stars.append(star)
     return stars
 
-
+# screensaver
 def move_and_draw_stars(stars, max_depth):
     origin_x = device.width // 2
     origin_y = device.height // 2
@@ -201,7 +207,7 @@ def move_and_draw_stars(stars, max_depth):
                     shade = "white"
                 draw.rectangle((x, y, x + size, y + size), fill = shade)
 
-
+# main drawing loop
 def Update_Screen(device):
     global Changed, Screensaver, Menu_uroven, Menu_menu_pointer, Menu_submenu_pointer, Menu_parent
 
@@ -235,6 +241,7 @@ my_thread.start()
 
 if __name__ == "__main__":
     try:
+# initialise all
         device = cmdline.create_device(Display_args)
         font_path1 = str(Path(__file__).resolve().parent.joinpath('fonts', 'C&C Red Alert [INET].ttf'))
         font_path2 = str(Path(__file__).resolve().parent.joinpath('fonts', 'DSEG7Modern-Regular.ttf'))
@@ -245,6 +252,8 @@ if __name__ == "__main__":
         font2_xl = ImageFont.truetype(font_path2, 50)
         Zmena = 1
         State = "Playing"
+        
+# scrolling engine
         New_song(Song_description)
         Scroll_timer = 99
         Scroll_timer_max = 12
@@ -275,7 +284,7 @@ if __name__ == "__main__":
             Wanna_scroll = True
         else:
             Wanna_scroll = False
-
+# main loop
         while True:
             if ( Wanna_scroll == True and (Screensaver == 0 or Screensaver == 1) ):
                 if ( Scroll_timer < Scroll_timer_max ):
@@ -352,10 +361,6 @@ if __name__ == "__main__":
             elif (Screensaver == 2):
                 move_and_draw_stars(stars, max_depth)
 
-
-#            time.sleep(0.5)
-# (x,y) x=doprava, y=dole
-# black, blue, indigo, red, white
-
     except KeyboardInterrupt:
         pass
+    
