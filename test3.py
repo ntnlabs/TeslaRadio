@@ -109,6 +109,11 @@ def rotate_down(scale_position):
 def rotate_press(state):
     global Volume, Changed, Timeout, Screensaver, Menu_uroven, Menu_menu_pointer, Menu_submenu_pointer, Menu_parent
     if ( state == "UP" ):
+        if (Screensaver > 0):
+            Screensaver = 0
+            Changed = 1
+            Timeout = 0
+            return
         if (Menu_uroven < 2):
             Menu_uroven = Menu_uroven + 1
             Menu_submenu_pointer = 0
@@ -177,12 +182,12 @@ def Update_Screen(device):
             draw.text((10,40), Menu_menu[Menu_menu_pointer], font = font2_ll, fill = "white")
         elif (Menu_uroven == 2):
             draw.text((10,20), Menu_menu[Menu_parent], font = font2_l, fill = "white")
-            draw.text((1,40), Menu_submenu[Menu_parent][Menu_submenu_pointer], font = font2_ll, fill = "white")    
+            draw.text((1,40), Menu_submenu[Menu_parent][Menu_submenu_pointer], font = font2_ll, fill = "white")
     Changed = 0
 
 # threading the encoder
 my_encoder = pyky040.Encoder(CLK=5, DT=6, SW=13)
-my_encoder.setup(scale_min=0, scale_max=100, step=5, inc_callback=rotate_up, dec_callback=rotate_down, sw_callback=rotate_press, sw_debounce_time=600)
+my_encoder.setup(scale_min=0, scale_max=100, step=5, inc_callback=rotate_up, dec_callback=rotate_down, sw_callback=rotate_press, sw_debounce_time=1200)
 my_thread = threading.Thread(target=my_encoder.watch)
 my_thread.start()
 
@@ -191,16 +196,17 @@ if __name__ == "__main__":
         device = cmdline.create_device(Display_args)
         font_path1 = str(Path(__file__).resolve().parent.joinpath('fonts', 'C&C Red Alert [INET].ttf'))
         font_path2 = str(Path(__file__).resolve().parent.joinpath('fonts', 'DSEG7Modern-Regular.ttf'))
-        font2_m = ImageFont.truetype(font_path1, 18)
-        font2_l = ImageFont.truetype(font_path1, 22)
-        font2_ll = ImageFont.truetype(font_path1, 36)
-        font2_xl = ImageFont.truetype(font_path2, 50)
+        font_path3 = str(Path(__file__).resolve().parent.joinpath('fonts', 'Volter__28Goldfish_29.ttf'))
+        font2_m = ImageFont.truetype(font_path3, 9)
+        font2_l = ImageFont.truetype(font_path1, 18)
+        font2_ll = ImageFont.truetype(font_path1, 28)
+        font2_xl = ImageFont.truetype(font_path1, 50)
         Zmena = 1
 
         while True:
             if (Changed == 1):
                 Update_Screen(device)
-            sleep(0.1)
+            sleep(0.05)
             if (Screensaver == 0):
                 if ( Timeout < Timeout_max ):
                     Timeout = Timeout + 1
