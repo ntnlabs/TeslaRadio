@@ -121,7 +121,7 @@ def rotate_press(state):
             Menu_parent = Menu_menu_pointer
         else:
             if ((Menu_menu_pointer == 3) and (Menu_submenu_pointer == 1)):
-                os.system("shutdown")
+                os.system("poweroff")
                 Menu_menu_pointer = 0
                 Menu_submenu_pointer = 0
                 Menu_parent = 0
