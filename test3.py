@@ -56,11 +56,12 @@ Volume = 0
 Volume_step = 0.5
 Volume_max = 100
 Changed = 1
-Command = 0
-Menu = 0
-Submenu = 0
-Where = 0
-Menu_menu = [['Volume', 'Play', 'Setup', 'Config', 'Exit'],['Play/pause', 'Stop', 'Next', 'Previous'],['Enable SSH', 'Enable BT', 'Enable Wifi' ],['Shutdown', 'Reboot']]
+Menu_menu = ['Play', 'Setup', 'Config', 'Exit']
+Menu_submenu = [['Play/pause', 'Stop', 'Next', 'Previous'],['Screensaver', 'Input', 'Timeout', 'Language', 'Update'],['Enable SSH', 'Enable BT', 'Enable Wifi' ],['Shutdown', 'Reboot']]
+Menu_uroven = 0
+Menu_menu_pointer = 0
+Menu_submenu_pointer = 0
+Menu_parent = 0
 Song_description = "Radio Expres: DURAN DURAN - RIO" # demo/test desc
 Timeout = 0
 Timeout_max = 30
@@ -68,60 +69,53 @@ Screensaver = 0
 
 # Define your callback
 def rotate_up(scale_position):
-#    print('Hello world! The scale position is {}'.format(scale_position))
-    global Volume, Changed, Menu, Submenu, Where, Timeout, Screensaver
+    global Volume, Changed, Timeout, Screensaver, Menu_uroven, Menu_menu_pointer, Menu_submenu_pointer, Menu_parent
     if (Screensaver > 0):
         Screensaver = 0
         Changed = 1
         Timeout = 0
         return
-    if (Menu == 0):
+    if (Menu_uroven == 0):
         if (Volume < Volume_max):
             Volume = Volume + Volume_step
-    elif (Where == 0):
-        if (Menu < (len(Menu_menu[0])-1)):
-            Menu = Menu + 0.5
-            Where = 0
-    elif (Submenu < (len(Menu_menu[int(Menu)])-1)):
-        Submenu = Submenu + 0.5
+    elif (Menu_uroven == 1):
+        if (Menu_menu_pointer < len(Menu_menu[Menu_menu_pointer])-1):
+            Menu_menu_pointer = Menu_menu_pointer + 1
+    elif (Menu_uroven == 2):
+        if (Menu_submenu_pointer < len(Menu_submenu[Menu_parent])-1):
+            Menu_submenu_pointer = Menu_submenu_pointer + 1
     Changed = 1
     Timeout = 0
 
 def rotate_down(scale_position):
-#    print('Hello world! The scale position is {}'.format(scale_position))
-    global Volume, Changed, Menu, Submenu, Where, Timeout, Screensaver
+    global Volume, Changed, Timeout, Screensaver, Menu_uroven, Menu_menu_pointer, Menu_submenu_pointer, Menu_parent
     if (Screensaver > 0):
         Screensaver = 0
         Changed = 1
         Timeout = 0
         return
-    if (Menu == 0):
+    if (Menu_uroven == 0):
         if (Volume > 0):
             Volume = Volume - Volume_step
-    elif (Where == 0):
-        if (Menu > 1):
-            Menu = Menu - 0.5
-            Where = 0
-    elif (Submenu > 0):
-        Submenu = Submenu - 0.5
+    if (Menu_uroven == 1):
+        if (Menu_menu_pointer > 0):
+            Menu_menu_pointer = Menu_menu_pointer - 1
+    elif (Menu_uroven == 2):
+        if (Menu_submenu_pointer > 0):
+            Menu_submenu_pointer = Menu_submenu_pointer - 1
     Changed = 1
     Timeout = 0
 
 def rotate_press(state):
-#    print('Hello world! The button has been pressed {}'.format(state))
-    global Menu, Submenu, Changed, Where, Timeout
+    global Volume, Changed, Timeout, Screensaver, Menu_uroven, Menu_menu_pointer, Menu_submenu_pointer, Menu_parent
     if ( state == "UP" ):
-        if (Menu == 0):
-            Menu = 1
-            Where = 0
-            Submenu = 0
+        if (Menu_uroven < 2):
+            Menu_uroven = Menu_uroven + 1
+            Menu_submenu_pointer = 0
+            Menu_parent = Menu_menu_pointer
         else:
-            if (Where == 0):
-                Submenu = 0
-                Where = Menu
-            else:
-                Where = 0
-                Submenu = 0
+            Menu_uroven = 1
+            Menu_menu_pointer = Menu_parent
     Changed = 1
     Timeout = 0
 
@@ -169,23 +163,21 @@ def move_and_draw_stars(stars, max_depth):
 
 
 def Update_Screen(device):
-    global Changed, Menu, Menu_menu, Where, Screensaver
+    global Changed, Screensaver, Menu_uroven, Menu_menu_pointer, Menu_submenu_pointer, Menu_parent
 
-    if ((Menu == 0) & (Where == 0)):
-        with canvas(device) as draw:
+    with canvas(device) as draw:
+        if (Menu_uroven == 0):
             if (Screensaver > 0):
                 draw.text((0,0), "Volume", font = font2_m, fill = "blue")
                 draw.text((80-(41*(len(str(int(Volume)))-1)),30), str(int(Volume)), font = font2_xl, fill = "blue")
             else:
                 draw.text((0,0), "Volume", font = font2_m, fill = "white")
                 draw.text((80-(41*(len(str(int(Volume)))-1)),30), str(int(Volume)), font = font2_xl, fill = "red")
-    elif (Where == 0):
-        with canvas(device) as draw:
-            draw.text((10,40), Menu_menu[0][int(Menu)], font = font2_ll, fill = "white")
-    elif (Where != 0):
-        with canvas(device) as draw:
-            draw.text((10,20), Menu_menu[0][int(Menu)], font = font2_l, fill = "white")
-            draw.text((1,40), Menu_menu[int(Menu)][int(Submenu)], font = font2_ll, fill = "white")
+        elif (Menu_uroven == 1):
+            draw.text((10,40), Menu_menu[Menu_menu_pointer], font = font2_ll, fill = "white")
+        elif (Menu_uroven == 2):
+            draw.text((10,20), Menu_menu[Menu_parent], font = font2_l, fill = "white")
+            draw.text((1,40), Menu_submenu[Menu_parent][Menu_submenu_pointer], font = font2_ll, fill = "white")    
     Changed = 0
 
 # threading the encoder
@@ -214,19 +206,17 @@ if __name__ == "__main__":
                     Timeout = Timeout + 1
                 else:
                     Timeout = 0
-                    Menu = 0
-                    Submenu = 0
-                    Where = 0
                     Changed = 1
                     Screensaver = 1
+                    Menu_uroven = 0
+                    Menu_menu_pointer = 0
+                    Menu_submenu_pointer = 0
+                    Menu_parent = 0
             elif (Screensaver == 1):
                 if ( Timeout < (Timeout_max * 2) ):
                     Timeout = Timeout + 1
                 else:
                     Timeout = 0
-                    Menu = 0
-                    Submenu = 0
-                    Where = 0
                     Changed = 1
                     Screensaver = 2
                     max_depth = 32
