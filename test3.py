@@ -64,7 +64,7 @@ Menu_submenu_pointer = 0
 Menu_parent = 0
 Song_description = "Radio Expres: DURAN DURAN - RIO" # demo/test desc
 Timeout = 0
-Timeout_max = 30
+Timeout_max = 60
 Screensaver = 0
 
 # Define your callback
@@ -211,9 +211,10 @@ if __name__ == "__main__":
                 if ( Timeout < Timeout_max ):
                     Timeout = Timeout + 1
                 else:
+                    if (Menu_uroven == 0):
+                        Screensaver = 1
                     Timeout = 0
                     Changed = 1
-                    Screensaver = 1
                     Menu_uroven = 0
                     Menu_menu_pointer = 0
                     Menu_submenu_pointer = 0
