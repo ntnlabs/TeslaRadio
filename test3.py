@@ -64,7 +64,7 @@ Menu_uroven = 0
 Menu_menu_pointer = 0
 Menu_submenu_pointer = 0
 Menu_parent = 0
-Song_description = "Radio Expres: GLADIATOR - NECHCEM O TEBA PRIST"  # demo/test desc
+Song_description = "Radio Radio Expres Expres: GLADIATOR GLADIATOR GLADIATOR - NECHCEM OOOO TEBAAA PRIIIST"  # demo/test desc
 Timeout = 0
 Timeout_max = 120 # x/2 = seconds
 Screensaver = 0
@@ -74,11 +74,11 @@ Song_name = ""
 State = ""
 Scroll_timer = 0
 Scroll_timer_max = 5
-Scroll_index = 0
-Scroll_need = 0
-Scroll_direction = 1
+Scroll_index_Song = 0
+Scroll_need_Song = 0
+Scroll_direction_Song = 1
 Song_name_scrolling = ""
-Scroll_display_len = 10
+Scroll_display_len_Song = 10
 
 def New_song(Description):
     global Station_name, Song_name, Artist_name
@@ -213,8 +213,8 @@ def Update_Screen(device):
     with canvas(device) as draw:
         if ( State == "Playing" ):
             draw.text((128-(len(State)*5),0), State, font = font2_s, fill = MyColor)
-            draw.text((0,98), "Station: " + Station_name, font = font2_s, fill = MyColor)
-            draw.text((0,108), "Artist: " + Artist_name, font = font2_s, fill = MyColor)
+            draw.text((0,98), "Station: " + Station_name_scrolling, font = font2_s, fill = MyColor)
+            draw.text((0,108), "Artist: " + Artist_name_scrolling, font = font2_s, fill = MyColor)
             draw.text((0,118), "Song: " + Song_name_scrolling, font = font2_s, fill = MyColor)
         if (Menu_uroven == 0):
             draw.text((0,0), "Volume", font = font2_s, fill = MyColor)
@@ -248,12 +248,30 @@ if __name__ == "__main__":
         New_song(Song_description)
         Scroll_timer = 99
         Scroll_timer_max = 12
-        Scroll_index = 0
-        Scroll_direction = 1
-        Scroll_display_len = 15
-        Song_name_scrolling = Song_name[0:Scroll_display_len]
-        Scroll_need = len(Song_name) - Scroll_display_len
-        if ( Scroll_need > 0 ):
+        Scroll_index_Song = 0
+        Scroll_direction_Song = 1
+        Scroll_direction_temp_Song = 0
+        Scroll_index_Artist = 0
+        Scroll_direction_Artist = 1
+        Scroll_direction_temp_Artist = 0
+        Scroll_index_Station = 0
+        Scroll_direction_Station = 1
+        Scroll_direction_temp_Station = 0
+        Scroll_buffer_max = 5
+        Scroll_buffer_Song = Scroll_buffer_max
+        Scroll_buffer_Artist = Scroll_buffer_max
+        Scroll_buffer_Station = Scroll_buffer_max
+        Scroll_display_len_Song = 16
+        Scroll_display_len_Artist = 15
+        Scroll_display_len_Station = 14
+        Artist_name_scrolling = Artist_name[0:Scroll_display_len_Artist]
+        Song_name_scrolling = Song_name[0:Scroll_display_len_Song]
+        Station_name_scrolling = Station_name[0:Scroll_display_len_Station]
+        Scroll_need_Song = len(Song_name) - Scroll_display_len_Song
+        Scroll_need_Artist = len(Artist_name) - Scroll_display_len_Artist
+        Scroll_need_Station = len(Station_name) - Scroll_display_len_Station
+
+        if ( (Scroll_need_Song > 0) or (Scroll_need_Artist > 0) or (Scroll_need_Station > 0)):
             Wanna_scroll = True
         else:
             Wanna_scroll = False
@@ -263,10 +281,48 @@ if __name__ == "__main__":
                 if ( Scroll_timer < Scroll_timer_max ):
                     Scroll_timer = Scroll_timer + 1
                 else:
-                    Song_name_scrolling = Song_name[0+Scroll_index:Scroll_display_len+Scroll_index]
-                    Scroll_index = Scroll_index + Scroll_direction
-                    if ( (Scroll_index == 0) or (Scroll_index == Scroll_need) ):
-                        Scroll_direction = Scroll_direction * -1
+                    if ( Scroll_need_Song > 0 ):
+                        Song_name_scrolling = Song_name[0+Scroll_index_Song:Scroll_display_len_Song+Scroll_index_Song]
+                        Scroll_index_Song = Scroll_index_Song + Scroll_direction_Song
+                        if ( (Scroll_index_Song == 0) or (Scroll_index_Song == Scroll_need_Song) ):
+                            if ( Scroll_buffer_Song > 0 ):
+                                if ( Scroll_direction_temp_Song == 0 ):
+                                    Scroll_direction_temp_Song = Scroll_direction_Song
+                                    Scroll_direction_Song = 0
+                                Scroll_buffer_Song = Scroll_buffer_Song - 1
+                            else:
+                                Scroll_direction_Song = Scroll_direction_temp_Song * -1
+                                Scroll_direction_temp_Song = 0
+                                Scroll_buffer_Song = Scroll_buffer_max
+
+                    if ( Scroll_need_Artist > 0 ):
+                        Artist_name_scrolling = Artist_name[0+Scroll_index_Artist:Scroll_display_len_Artist+Scroll_index_Artist]
+                        Scroll_index_Artist = Scroll_index_Artist + Scroll_direction_Artist
+                        if ( (Scroll_index_Artist == 0) or (Scroll_index_Artist == Scroll_need_Artist) ):
+                            if ( Scroll_buffer_Artist > 0 ):
+                                if ( Scroll_direction_temp_Artist == 0 ):
+                                    Scroll_direction_temp_Artist = Scroll_direction_Artist
+                                    Scroll_direction_Artist = 0
+                                Scroll_buffer_Artist = Scroll_buffer_Artist - 1
+                            else:
+                                Scroll_direction_Artist = Scroll_direction_temp_Artist * -1
+                                Scroll_direction_temp_Artist = 0
+                                Scroll_buffer_Artist = Scroll_buffer_max
+
+                    if ( Scroll_need_Station > 0 ):
+                        Station_name_scrolling = Station_name[0+Scroll_index_Station:Scroll_display_len_Station+Scroll_index_Station]
+                        Scroll_index_Station = Scroll_index_Station + Scroll_direction_Station
+                        if ( (Scroll_index_Station == 0) or (Scroll_index_Station == Scroll_need_Station) ):
+                            if ( Scroll_buffer_Station > 0 ):
+                                if ( Scroll_direction_temp_Station == 0 ):
+                                    Scroll_direction_temp_Station = Scroll_direction_Station
+                                    Scroll_direction_Station = 0
+                                Scroll_buffer_Station = Scroll_buffer_Station - 1
+                            else:
+                                Scroll_direction_Station = Scroll_direction_temp_Station * -1
+                                Scroll_direction_temp_Station = 0
+                                Scroll_buffer_Station = Scroll_buffer_max
+
                     Scroll_timer = 0
                     Changed = 1
             if (Changed == 1):
