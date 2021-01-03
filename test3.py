@@ -200,7 +200,7 @@ if __name__ == "__main__":
         font2_m = ImageFont.truetype(font_path3, 9)
         font2_l = ImageFont.truetype(font_path1, 18)
         font2_ll = ImageFont.truetype(font_path1, 28)
-        font2_xl = ImageFont.truetype(font_path1, 50)
+        font2_xl = ImageFont.truetype(font_path2, 50)
         Zmena = 1
 
         while True:
