@@ -4,6 +4,7 @@ from time import sleep
 from pathlib import Path
 from luma.core import cmdline
 from luma.core.render import canvas
+from luma.core.virtual import viewport
 from PIL import ImageFont
 from random import randrange
 from pyky040 import pyky040 # this module was forked/changed
@@ -57,16 +58,35 @@ Volume = 0
 Volume_step = 0.5
 Volume_max = 100
 Changed = 1
-Menu_menu = ['Play', 'Setup', 'Config', 'Exit']
+Menu_menu = ['Player', 'Setup', 'Config', 'Exit']
 Menu_submenu = [['Play/pause', 'Stop', 'Next', 'Previous'],['Screensaver', 'Input', 'Timeout', 'Language', 'Update'],['Enable SSH', 'Enable BT', 'Enable Wifi' ],['Shutdown', 'Reboot']]
 Menu_uroven = 0
 Menu_menu_pointer = 0
 Menu_submenu_pointer = 0
 Menu_parent = 0
-Song_description = "Radio Expres: DURAN DURAN - RIO" # demo/test desc
+Song_description = "Radio Expres: GLADIATOR - NECHCEM O TEBA PRIST"  # demo/test desc
 Timeout = 0
-Timeout_max = 60
+Timeout_max = 120 # x/2 = seconds
 Screensaver = 0
+Station_name = ""
+Artist_name = ""
+Song_name = ""
+State = ""
+Scroll_timer = 0
+Scroll_timer_max = 5
+Scroll_index = 0
+Scroll_need = 0
+Scroll_direction = 1
+Song_name_scrolling = ""
+Scroll_display_len = 10
+
+def New_song(Description):
+    global Station_name, Song_name, Artist_name
+    Station_name, Song_name = Description.split(":")
+    Station_name = Station_name.strip()
+    Artist_name, Song_name = Song_name.split("-")
+    Artist_name = Artist_name.strip()
+    Song_name = Song_name.strip()
 
 # Define your callback
 def rotate_up(scale_position):
@@ -185,19 +205,26 @@ def move_and_draw_stars(stars, max_depth):
 def Update_Screen(device):
     global Changed, Screensaver, Menu_uroven, Menu_menu_pointer, Menu_submenu_pointer, Menu_parent
 
+    if (Screensaver > 0):
+        MyColor = "blue"
+    else:
+        MyColor = "red"
+
     with canvas(device) as draw:
+        if ( State == "Playing" ):
+            draw.text((128-(len(State)*5),0), State, font = font2_s, fill = MyColor)
+            draw.text((0,98), "Station: " + Station_name, font = font2_s, fill = MyColor)
+            draw.text((0,108), "Artist: " + Artist_name, font = font2_s, fill = MyColor)
+            draw.text((0,118), "Song: " + Song_name_scrolling, font = font2_s, fill = MyColor)
         if (Menu_uroven == 0):
-            if (Screensaver > 0):
-                draw.text((0,0), "Volume", font = font2_m, fill = "blue")
-                draw.text((80-(41*(len(str(int(Volume)))-1)),30), str(int(Volume)), font = font2_xl, fill = "blue")
-            else:
-                draw.text((0,0), "Volume", font = font2_m, fill = "white")
-                draw.text((80-(41*(len(str(int(Volume)))-1)),30), str(int(Volume)), font = font2_xl, fill = "red")
+            draw.text((0,0), "Volume", font = font2_s, fill = MyColor)
+            draw.text((80-(41*(len(str(int(Volume)))-1)),30), str(int(Volume)), font = font2_xl, fill = MyColor)
         elif (Menu_uroven == 1):
             draw.text((10,40), Menu_menu[int(Menu_menu_pointer)], font = font2_ll, fill = "white")
         elif (Menu_uroven == 2):
             draw.text((10,20), Menu_menu[int(Menu_parent)], font = font2_l, fill = "white")
             draw.text((1,40), Menu_submenu[int(Menu_parent)][int(Menu_submenu_pointer)], font = font2_ll, fill = "white")
+
     Changed = 0
 
 # threading the encoder
@@ -212,13 +239,36 @@ if __name__ == "__main__":
         font_path1 = str(Path(__file__).resolve().parent.joinpath('fonts', 'C&C Red Alert [INET].ttf'))
         font_path2 = str(Path(__file__).resolve().parent.joinpath('fonts', 'DSEG7Modern-Regular.ttf'))
         font_path3 = str(Path(__file__).resolve().parent.joinpath('fonts', 'Volter__28Goldfish_29.ttf'))
-        font2_m = ImageFont.truetype(font_path3, 9)
+        font2_s = ImageFont.truetype(font_path3, 9)
         font2_l = ImageFont.truetype(font_path1, 18)
         font2_ll = ImageFont.truetype(font_path1, 28)
         font2_xl = ImageFont.truetype(font_path2, 50)
         Zmena = 1
+        State = "Playing"
+        New_song(Song_description)
+        Scroll_timer = 99
+        Scroll_timer_max = 12
+        Scroll_index = 0
+        Scroll_direction = 1
+        Scroll_display_len = 15
+        Song_name_scrolling = Song_name[0:Scroll_display_len]
+        Scroll_need = len(Song_name) - Scroll_display_len
+        if ( Scroll_need > 0 ):
+            Wanna_scroll = True
+        else:
+            Wanna_scroll = False
 
         while True:
+            if ( Wanna_scroll == True and (Screensaver == 0 or Screensaver == 1) ):
+                if ( Scroll_timer < Scroll_timer_max ):
+                    Scroll_timer = Scroll_timer + 1
+                else:
+                    Song_name_scrolling = Song_name[0+Scroll_index:Scroll_display_len+Scroll_index]
+                    Scroll_index = Scroll_index + Scroll_direction
+                    if ( (Scroll_index == 0) or (Scroll_index == Scroll_need) ):
+                        Scroll_direction = Scroll_direction * -1
+                    Scroll_timer = 0
+                    Changed = 1
             if (Changed == 1):
                 Update_Screen(device)
             sleep(0.05)
