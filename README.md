@@ -19,6 +19,22 @@ Tesla ARS 236 in video: https://www.youtube.com/watch?v=bsh7unEFyhs
 * KY040 Rotary Encoder
 * Waveshare 1.5 128x128 OLED display
 
+### KY040 wiring
+* CLK - PIN 29 (GPIO  5)
+* DT  - PIN 31 (GPIO  6)
+* SW  - PIN 33 (GPIO 13)
+* VCC - 3v3 (any)
+* GND - Ground (any)
+
+### OLED wiring
+* DIN - PIN 19 (GPIO 10) - SPI0 MOSI
+* CLK - PIN 23 (GPIO 11) - SPI0 SCLK
+* DC  - PIN 18 (GPIO 24)
+* CS  - PIN 24 (GPIO  8) - SPI0 CE0
+* RST - PIN 22 (GPIO 25)
+* VCC - 3v3 (any)
+* GND - Ground (any)
+
 ## The SW
 * python3.7
 * pyky040 module
